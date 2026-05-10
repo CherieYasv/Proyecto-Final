@@ -1,0 +1,6 @@
+#ifndef LUCKY20_LUCKYFUNCIONES_H
+#define LUCKY20_LUCKYFUNCIONES_H
+
+
+
+#endif
