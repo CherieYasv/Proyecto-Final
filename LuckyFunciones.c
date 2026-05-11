@@ -21,6 +21,27 @@ Banco setDomino(int maximoDomino) {
     return banco;
 }
 
-Banco mezclarSet() {
+Banco mezclarSet(Banco banco) {
+    //Plantear algoritmo Fisher-Yates
+    /*
+     *Limite: maximoDomino - 1
+     *Hacer un for en reversa.
+     *
+     *En cada iteracion del ciclo se generara un numero al azar
+     *entre el 0 y la iteracion actual.
+     *
+     *Intercambiar la posicion de la ficha del ciclo por la posicion
+     *del numero generado al azar
+     */
+    Ficha fichaTemporal;
+    int numeroAleatorio = 0;
+    for (int i = banco.cantidadActual - 1; i > 0; i--) {
+        numeroAleatorio = rand() % i;
 
+        fichaTemporal = banco.lista[i];
+        banco.lista[i] = banco.lista[numeroAleatorio];
+        banco.lista[numeroAleatorio] = fichaTemporal;
+    }
+
+    return banco;
 }

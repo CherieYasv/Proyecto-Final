@@ -12,5 +12,6 @@ typedef struct {
 } Banco;
 
 Banco setDomino(int maximoDomino);
+Banco mezclarSet(Banco banco);
 
 #endif
