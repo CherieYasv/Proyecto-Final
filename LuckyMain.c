@@ -23,4 +23,21 @@ int main() {
     for (int i = 0; i < banco.cantidadActual; i++) {
         printf("%d|%d ", banco.lista[i].izquierda, banco.lista[i].derecha);
     }
+
+    Jugador jugador1;
+    jugador1.cantidadFichas = 0;
+
+    EstadoReparto paquete = repartirSeisCartas(banco, jugador1);
+
+    jugador1 = paquete.jugador;
+
+    // La mano del jugador -->
+    printf("\n\nFichas en la mano del Jugador 1:\n");
+    for(int i = 0; i < jugador1.cantidadFichas; i++) {
+        printf("%d|%d ", jugador1.mano[i].izquierda, jugador1.mano[i].derecha);
+    }
+
+    printf("\nFichas que sobraron en el banco: %d\n", banco.cantidadActual);
+
+    return 0;
 }

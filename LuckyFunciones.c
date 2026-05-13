@@ -36,7 +36,7 @@ Banco mezclarSet(Banco banco) {
     Ficha fichaTemporal;
     int numeroAleatorio = 0;
     for (int i = banco.cantidadActual - 1; i > 0; i--) {
-        numeroAleatorio = rand() % i;
+        numeroAleatorio = rand() % (i + 1);
 
         fichaTemporal = banco.lista[i];
         banco.lista[i] = banco.lista[numeroAleatorio];
@@ -44,4 +44,24 @@ Banco mezclarSet(Banco banco) {
     }
 
     return banco;
+}
+
+EstadoReparto repartirSeisCartas(Banco bancoActual, Jugador jugadorActual) {
+    EstadoReparto resultado; //Copia local
+    resultado.banco = bancoActual;
+    resultado.jugador = jugadorActual;
+
+    //Repartimos las 6 fichas, como ya estan mezcladas, se toman linealmente
+    for (int i = 0; i < 6; i++) {
+        int indiceCima = resultado.banco.cantidadActual - 1;
+        Ficha fichaTomada = resultado.banco.lista[indiceCima];
+
+        int indiceMano = resultado.jugador.cantidadFichas;
+        resultado.jugador.mano[indiceMano] = fichaTomada;
+
+        resultado.banco.cantidadActual--;
+        resultado.jugador.cantidadFichas++;
+    }
+
+    return resultado;
 }

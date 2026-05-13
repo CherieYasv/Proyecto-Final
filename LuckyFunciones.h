@@ -11,7 +11,18 @@ typedef struct {
     int cantidadActual; //<-- Cantidad que se ira modificando mostrando la cantidad de fichas en el banco
 } Banco;
 
+typedef struct { //Se crea una estructura para el jugador y para el banco
+    Ficha mano[28];
+    int cantidadFichas;
+} Jugador;
+
+typedef struct { //Se junta el banco/jugador en una sola
+    Banco banco;
+    Jugador jugador;
+} EstadoReparto;
+
 Banco setDomino(int maximoDomino);
 Banco mezclarSet(Banco banco);
+EstadoReparto repartirSeisCartas(Banco bancoActual, Jugador jugadorActual);
 
 #endif
