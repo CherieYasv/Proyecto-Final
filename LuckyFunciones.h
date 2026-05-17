@@ -1,5 +1,5 @@
-#ifndef LUCKY20_LUCKYFUNCIONES_H
-#define LUCKY20_LUCKYFUNCIONES_H
+#ifndef LUCKYFUNCIONES_H
+#define LUCKYFUNCIONES_H
 
 typedef struct {
     int izquierda;
@@ -7,16 +7,16 @@ typedef struct {
 } Ficha;
 
 typedef struct {
-    Ficha lista[91]; //<-- Si fuera el maximo (pares de 12), el maximo son 91 fichas.
-    int cantidadActual; //<-- Cantidad que se ira modificando mostrando la cantidad de fichas en el banco
+    Ficha lista[91];
+    int cantidadActual;
 } Banco;
 
-typedef struct { //Se crea una estructura para el jugador y para el banco
+typedef struct {
     Ficha mano[28];
     int cantidadFichas;
 } Jugador;
 
-typedef struct { //Se junta el banco/jugador en una sola
+typedef struct {
     Banco banco;
     Jugador jugador;
 } EstadoReparto;
