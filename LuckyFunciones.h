@@ -25,4 +25,7 @@ Banco setDomino(int maximoDomino);
 Banco mezclarSet(Banco banco);
 EstadoReparto repartirSeisCartas(Banco bancoActual, Jugador jugadorActual);
 
+int validarPar(Ficha f1, Ficha f2);
+Jugador removerFichas(Jugador jugador, int indiceJUno, int indiceJDos);
+
 #endif

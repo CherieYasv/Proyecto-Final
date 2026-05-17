@@ -51,3 +51,56 @@ EstadoReparto repartirSeisCartas(Banco bancoActual, Jugador jugadorActual) {
 
     return resultado;
 }
+
+//Queremos que nos regrese 1 si es valido y 0 si no lo es
+int validarPar(Ficha f1, Ficha f2) {
+    int ceros = 0;
+
+    // --> Contamos si hay comodines
+    if (f1.izquierda == 0) {
+        ceros++;
+    }
+    if (f1.derecha == 0) {
+        ceros++;
+    }
+    if (f2.izquierda == 0) {
+        ceros++;
+    }
+    if (f2.derecha == 0) {
+        ceros++;
+    }
+
+    int suma = f1.izquierda + f1.derecha + f2.izquierda + f2.derecha;
+
+    if (ceros == 0) {
+        if (suma == 20) {
+            return 1;
+        }
+        return 0;
+    } else {
+        if (suma <= 20) {
+            return 1;
+        }
+        return 0;
+    }
+}
+
+Jugador removerFichas(Jugador jugador, int indiceJUno, int indiceJDos) {
+    if (indiceJUno < indiceJDos) {
+        int temp = indiceJUno;
+        indiceJUno = indiceJDos;
+        indiceJDos = temp;
+    }
+
+    for (int i = indiceJUno; i < jugador.cantidadFichas - 1; i++) {
+        jugador.mano[i] = jugador.mano[i + 1];
+    }
+    jugador.cantidadFichas--;
+
+    for (int i = indiceJDos; i < jugador.cantidadFichas - 1; i++) {
+        jugador.mano[i] = jugador.mano[i + 1];
+    }
+    jugador.cantidadFichas--;
+
+    return jugador;
+}
