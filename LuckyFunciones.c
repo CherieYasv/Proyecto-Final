@@ -104,3 +104,30 @@ Jugador removerFichas(Jugador jugador, int indiceJUno, int indiceJDos) {
 
     return jugador;
 }
+
+EstadoReparto pedirCuatroFichas(Banco bancoActual, Jugador jugadorActual) {
+    EstadoReparto resultado;
+    resultado.banco = bancoActual;
+    resultado.jugador = jugadorActual;
+
+    int cantidadATomar = 4;
+    if (resultado.banco.cantidadActual < 4) {
+        cantidadATomar = resultado.banco.cantidadActual;
+    }
+
+    int indiceCima = 0;
+    int indiceMano = 0;
+
+    for (int i = 0; i < cantidadATomar; i++) {
+        indiceCima = resultado.banco.cantidadActual - 1;
+        Ficha fichaTomada = resultado.banco.lista[indiceCima];
+
+        indiceMano = resultado.jugador.cantidadFichas;
+        resultado.jugador.mano[indiceMano] = fichaTomada;
+
+        resultado.banco.cantidadActual--;
+        resultado.jugador.cantidadFichas++;
+    }
+
+    return resultado;
+}
