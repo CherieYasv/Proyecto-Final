@@ -173,3 +173,34 @@ void guardarMovimiento(int numJugador, Ficha f1, Ficha f2) {
         fclose(archivo);
     }
 }
+
+void mostrarRepeticion() {
+    FILE *archivo = fopen("partida.bin", "rb");
+    if (archivo == NULL) {
+        printf("\nNo hay movimientos registrados para esta partida.\n");
+        return;
+    }
+    RegistroMovimiento movimientos;
+    printf("\n=== REPETICION DE JUGADAS ===\n");
+    while (fread(&movimientos, sizeof(RegistroMovimiento), 1, archivo) == 1) {
+        printf("Jugador %d: [%d|%d] + [%d|%d]\n",
+               movimientos.numeroJugador, movimientos.ficha1.izquierda, movimientos.ficha1.derecha,
+               movimientos.ficha2.izquierda, movimientos.ficha2.derecha);
+    }
+    fclose(archivo);
+}
+
+void mostrarGanadores() {
+    FILE *archivo = fopen("ganadores.bin", "rb");
+    if (archivo == NULL) {
+        printf("\nEl apartado de ganadores esta vacio por ahora.\n");
+        return;
+    }
+    RegistroGanador registro;
+    printf("\n=== GANADORES ===\n");
+    printf("%-20s | %-10s | %-10s\n", "NOMBRE", "PARES", "FECHA");
+    while (fread(&registro, sizeof(RegistroGanador), 1, archivo) == 1) {
+        printf("%-20s | %-10d | %-10s\n", registro.nombre, registro.paresFormados, registro.fecha);
+    }
+    fclose(archivo);
+}

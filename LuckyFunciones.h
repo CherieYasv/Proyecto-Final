@@ -45,5 +45,7 @@ void guardarGanador(char nombreGanador[], int pares);
 
 void inicializarArchivoPartida();
 void guardarMovimiento(int numJugador, Ficha f1, Ficha f2);
+void mostrarRepeticion();
+void mostrarGanadores();
 
 #endif

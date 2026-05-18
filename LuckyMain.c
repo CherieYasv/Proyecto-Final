@@ -16,7 +16,6 @@ int main() {
         printf("\n¿Con que set de domino desea jugar? (6, 9 o 12)\nDoble: ");
         int lecturaExitosa = scanf("%d", &setDominos);
         while(getchar() != '\n');
-
         if (lecturaExitosa != 1 || (setDominos != 6 && setDominos != 9 && setDominos != 12)) {
             printf("\nERROR\n=== Solo puedes escribir el numero 6, 9 o 12 ===\n");
             setDominos = 0;
@@ -27,7 +26,6 @@ int main() {
         printf("\n¿Cuantos jugadores desean jugar? (1 a 4 jugadores): ");
         int lecturaExitosa = scanf("%d", &cantidadJugadores);
         while(getchar() != '\n');
-
         if (lecturaExitosa != 1 || cantidadJugadores < 1 || cantidadJugadores > 4) {
             printf("\nERROR\n=== Ingresa un numero valido entre 1 y 4 ===\n");
             cantidadJugadores = 0;
@@ -39,7 +37,6 @@ int main() {
     printf("\nFichas totales mezcladas: %d\n", banco.cantidadActual);
 
     Jugador jugadores[4];
-
     for (int i = 0; i < cantidadJugadores; i++) {
         jugadores[i].cantidadFichas = 0;
         jugadores[i].paresFormados = 0;
@@ -49,19 +46,15 @@ int main() {
     }
 
     printf("\n=== REPARTO INICIAL FINALIZADO ===\n");
-
     int juegoTerminado = 0;
     char opcionMenu;
 
     printf("\n\n====== COMIENZA EL JUEGO ======\n");
-
     inicializarArchivoPartida();
 
     while (juegoTerminado == 0) {
         for (int i = 0; i < cantidadJugadores; i++) {
-            if (juegoTerminado == 1) {
-                break;
-            }
+            if (juegoTerminado == 1) break;
 
             printf("\nTURNO DEL JUGADOR %d", i + 1);
             printf("\nFichas disponibles en el banco: %d", banco.cantidadActual);
@@ -76,10 +69,8 @@ int main() {
 
             if (opcionMenu == 'a' || opcionMenu == 'A') {
                 int eleccion1, eleccion2;
-                printf("Ficha 1: ");
-                scanf("%d", &eleccion1);
-                printf("Ficha 2: ");
-                scanf("%d", &eleccion2);
+                printf("Ficha 1: "); scanf("%d", &eleccion1);
+                printf("Ficha 2: "); scanf("%d", &eleccion2);
                 while(getchar() != '\n');
 
                 if(eleccion1 < 1 || eleccion1 > jugadores[i].cantidadFichas || eleccion2 < 1 || eleccion2 > jugadores[i].cantidadFichas || eleccion1 == eleccion2) {
@@ -91,9 +82,7 @@ int main() {
                     if (validarPar(ficha1, ficha2) == 1) {
                         printf("Conseguiste formar un par de 20.\n");
                         jugadores[i].paresFormados++;
-
                         guardarMovimiento(i + 1, ficha1, ficha2);
-
                         jugadores[i] = removerFichas(jugadores[i], eleccion1 - 1, eleccion2 - 1);
 
                         if (jugadores[i].cantidadFichas == 0) {
@@ -108,9 +97,7 @@ int main() {
                     } else printf("ERROR: No suman 20.\n");
                 }
             } else if (opcionMenu == 'b' || opcionMenu == 'B') {
-                if (banco.cantidadActual == 0) {
-                    printf("Banco vacio.\n");
-                }
+                if (banco.cantidadActual == 0) printf("Banco vacio.\n");
                 else {
                     EstadoReparto paquete = pedirCuatroFichas(banco, jugadores[i]);
                     banco = paquete.banco;
@@ -122,6 +109,20 @@ int main() {
             }
         }
     }
+
+    char consulta;
+    printf("\n¿Deseas ver la repeticion de esta partida? (s/n): ");
+    scanf(" %c", &consulta);
+    if(consulta == 's' || consulta == 'S') {
+        mostrarRepeticion();
+    }
+
+    printf("\n¿Deseas ver el historial de ganadores? (s/n): ");
+    scanf(" %c", &consulta);
+    if(consulta == 's' || consulta == 'S') {
+        mostrarGanadores();
+    }
+
     printf("\n=== VUELVA PRONTO :D ===\n");
     return 0;
 }
