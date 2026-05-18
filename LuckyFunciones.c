@@ -1,5 +1,7 @@
 #include "LuckyFunciones.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 Banco setDomino(int maximoDomino) {
     Banco banco;
@@ -7,9 +9,13 @@ Banco setDomino(int maximoDomino) {
 
     for (int i = 0; i <= maximoDomino; i++) {
         for (int j = i; j <= maximoDomino; j++) {
-            banco.lista[banco.cantidadActual].izquierda = i;
-            banco.lista[banco.cantidadActual].derecha = j;
-            banco.cantidadActual++;
+
+            if (i + j <= 20) {
+                banco.lista[banco.cantidadActual].izquierda = i;
+                banco.lista[banco.cantidadActual].derecha = j;
+                banco.cantidadActual++;
+            }
+
         }
     }
     return banco;
@@ -52,11 +58,9 @@ EstadoReparto repartirSeisCartas(Banco bancoActual, Jugador jugadorActual) {
     return resultado;
 }
 
-//Queremos que nos regrese 1 si es valido y 0 si no lo es
 int validarPar(Ficha f1, Ficha f2) {
     int ceros = 0;
 
-    // --> Contamos si hay comodines
     if (f1.izquierda == 0) {
         ceros++;
     }
@@ -130,4 +134,23 @@ EstadoReparto pedirCuatroFichas(Banco bancoActual, Jugador jugadorActual) {
     }
 
     return resultado;
+}
+
+void guardarGanador(char nombreGanador[], int pares) {
+    RegistroGanador nuevoGanador;
+
+    strcpy(nuevoGanador.nombre, nombreGanador);
+    nuevoGanador.paresFormados = pares;
+
+    strcpy(nuevoGanador.fecha, "DD/MM/AAAA");
+
+    FILE *archivo = fopen("ganadores.bin", "ab");
+
+    if (archivo != NULL) {
+        fwrite(&nuevoGanador, sizeof(RegistroGanador), 1, archivo);
+        fclose(archivo);
+        printf("\nEl registro de tu victoria se ha guardado correctamente en 'ganadores.bin'.\n");
+    } else {
+        printf("\nERROR\nNo se pudo crear o abrir el archivo de ganadores.\n");
+    }
 }

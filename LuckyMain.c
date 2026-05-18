@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "LuckyFunciones.c"
 
 int main() {
@@ -41,6 +42,8 @@ int main() {
 
     for (int i = 0; i < cantidadJugadores; i++) {
         jugadores[i].cantidadFichas = 0;
+        jugadores[i].paresFormados = 0;
+
         EstadoReparto paquete = repartirSeisCartas(banco, jugadores[i]);
         banco = paquete.banco;
         jugadores[i] = paquete.jugador;
@@ -101,12 +104,23 @@ int main() {
                     if (validarPar(ficha1, ficha2) == 1) {
                         printf("Conseguiste formar un par de 20.\n");
 
+                        jugadores[i].paresFormados++;
+
                         jugadores[i] = removerFichas(jugadores[i], indiceJUno, indiceJDos);
 
                         if (jugadores[i].cantidadFichas == 0) {
                             printf("\n=============================================\n");
                             printf("   EL JUGADOR %d SE QUEDO SIN FICHAS Y GANO\n", i + 1);
                             printf("=============================================\n");
+
+                            char nombreGanador[50];
+                            printf("\n¡Felicidades! Ingresa tu nombre para el registro historico: ");
+
+                            fgets(nombreGanador, sizeof(nombreGanador), stdin);
+                            nombreGanador[strcspn(nombreGanador, "\n")] = '\0';
+
+                            guardarGanador(nombreGanador, jugadores[i].paresFormados);
+
                             juegoTerminado = 1;
                         }
                     } else {

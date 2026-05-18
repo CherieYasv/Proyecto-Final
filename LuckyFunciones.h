@@ -14,12 +14,19 @@ typedef struct {
 typedef struct {
     Ficha mano[28];
     int cantidadFichas;
+    int paresFormados;
 } Jugador;
 
 typedef struct {
     Banco banco;
     Jugador jugador;
 } EstadoReparto;
+
+typedef struct {
+    char nombre[50];
+    int paresFormados;
+    char fecha[15];
+} RegistroGanador;
 
 Banco setDomino(int maximoDomino);
 Banco mezclarSet(Banco banco);
@@ -28,5 +35,6 @@ EstadoReparto pedirCuatroFichas(Banco bancoActual, Jugador jugadorActual);
 
 int validarPar(Ficha f1, Ficha f2);
 Jugador removerFichas(Jugador jugador, int indiceJUno, int indiceJDos);
+void guardarGanador(char nombreGanador[], int pares);
 
 #endif
