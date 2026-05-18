@@ -154,3 +154,22 @@ void guardarGanador(char nombreGanador[], int pares) {
         printf("\nERROR\nNo se pudo crear o abrir el archivo de ganadores.\n");
     }
 }
+
+void inicializarArchivoPartida() {
+    FILE *archivo = fopen("partida.bin", "wb");
+    if (archivo != NULL) {
+        fclose(archivo);
+    }
+}
+
+void guardarMovimiento(int numJugador, Ficha f1, Ficha f2) {
+    RegistroMovimiento mov;
+    mov.numeroJugador = numJugador;
+    mov.ficha1 = f1;
+    mov.ficha2 = f2;
+    FILE *archivo = fopen("partida.bin", "ab");
+    if (archivo != NULL) {
+        fwrite(&mov, sizeof(RegistroMovimiento), 1, archivo);
+        fclose(archivo);
+    }
+}
