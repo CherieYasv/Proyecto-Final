@@ -14,7 +14,7 @@ int main() {
     do {
         printf("\n===== MENU PRINCIPAL =====\n");
         printf("1. Jugar una partida\n");
-        printf("2. Ver repeticion de la ultima partida\n");
+        printf("2. Ver repeticion de una partida\n");
         printf("3. Ver historial de ganadores\n");
         printf("4. Salir\n");
         printf("Elige una opcion: ");
@@ -25,6 +25,8 @@ int main() {
         if (opcionPrincipal == 1) {
             int setDominos = 0;
             int cantidadJugadores = 0;
+            int modoPrueba = 0;
+            char opcionPrueba;
 
             do {
                 printf("\n¿Con que set de domino desea jugar? (6, 9 o 12)\nDoble: ");
@@ -46,6 +48,20 @@ int main() {
                 }
             } while (cantidadJugadores < 1 || cantidadJugadores > 4);
 
+            do {
+                printf("\n¿Deseas activar el Modo Prueba para el Jugador 1? (s/n): ");
+                scanf(" %c", &opcionPrueba);
+                while(getchar() != '\n');
+
+                if (opcionPrueba == 's' || opcionPrueba == 'S') {
+                    modoPrueba = 1;
+                } else if (opcionPrueba == 'n' || opcionPrueba == 'N') {
+                    modoPrueba = 0;
+                } else {
+                    printf("\nERROR\n=== Por favor ingresa unicamente la letra 's' para Si o 'n' para No ===\n");
+                }
+            } while (opcionPrueba != 's' && opcionPrueba != 'S' && opcionPrueba != 'n' && opcionPrueba != 'N');
+
             Banco banco = setDomino(setDominos);
             banco = mezclarSet(banco);
             printf("\nFichas totales mezcladas: %d\n", banco.cantidadActual);
@@ -54,7 +70,15 @@ int main() {
             for (int i = 0; i < cantidadJugadores; i++) {
                 jugadores[i].cantidadFichas = 0;
                 jugadores[i].paresFormados = 0;
-                EstadoReparto paquete = repartirSeisCartas(banco, jugadores[i]);
+
+                EstadoReparto paquete;
+                if (modoPrueba == 1 && i == 0) {
+                    paquete = repartirModoPrueba(banco, jugadores[i]);
+                    printf("\nModo Prueba activado. Jugador 1 recibe mano ganadora.\n");
+                } else {
+                    paquete = repartirSeisCartas(banco, jugadores[i]);
+                }
+
                 banco = paquete.banco;
                 jugadores[i] = paquete.jugador;
             }
@@ -129,6 +153,19 @@ int main() {
                     }
                 }
             }
+
+            char opcionGuardar;
+            do {
+                printf("\n¿Deseas guardar el registro completo de movimientos de esta partida? (s/n): ");
+                scanf(" %c", &opcionGuardar);
+                while(getchar() != '\n');
+
+                if (opcionGuardar == 's' || opcionGuardar == 'S') {
+                    guardarPartidaFinal();
+                } else if (opcionGuardar != 'n' && opcionGuardar != 'N') {
+                    printf("\nERROR\n=== Por favor ingresa unicamente la letra 's' para Si o 'n' para No ===\n");
+                }
+            } while (opcionGuardar != 's' && opcionGuardar != 'S' && opcionGuardar != 'n' && opcionGuardar != 'N');
 
         } else if (opcionPrincipal == 2) {
             mostrarRepeticion();

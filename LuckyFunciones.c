@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 Banco setDomino(int maximoDomino) {
     Banco banco;
@@ -9,13 +10,11 @@ Banco setDomino(int maximoDomino) {
 
     for (int i = 0; i <= maximoDomino; i++) {
         for (int j = i; j <= maximoDomino; j++) {
-
             if (i + j <= 20) {
                 banco.lista[banco.cantidadActual].izquierda = i;
                 banco.lista[banco.cantidadActual].derecha = j;
                 banco.cantidadActual++;
             }
-
         }
     }
     return banco;
@@ -55,6 +54,31 @@ EstadoReparto repartirSeisCartas(Banco bancoActual, Jugador jugadorActual) {
         resultado.jugador.cantidadFichas++;
     }
 
+    return resultado;
+}
+
+EstadoReparto repartirModoPrueba(Banco bancoActual, Jugador jugadorActual) {
+    EstadoReparto resultado;
+    resultado.banco = bancoActual;
+    resultado.jugador = jugadorActual;
+
+    Ficha fichasTrampa[6] = {{6, 6}, {3, 5}, {5, 6}, {4, 5}, {4, 6}, {5, 5}};
+
+    for (int k = 0; k < 6; k++) {
+        for (int i = 0; i < resultado.banco.cantidadActual; i++) {
+            if (resultado.banco.lista[i].izquierda == fichasTrampa[k].izquierda &&
+                resultado.banco.lista[i].derecha == fichasTrampa[k].derecha) {
+
+                int indiceMano = resultado.jugador.cantidadFichas;
+                resultado.jugador.mano[indiceMano] = resultado.banco.lista[i];
+                resultado.jugador.cantidadFichas++;
+
+                resultado.banco.lista[i] = resultado.banco.lista[resultado.banco.cantidadActual - 1];
+                resultado.banco.cantidadActual--;
+                break;
+            }
+        }
+    }
     return resultado;
 }
 
@@ -136,13 +160,48 @@ EstadoReparto pedirCuatroFichas(Banco bancoActual, Jugador jugadorActual) {
     return resultado;
 }
 
+ResultadoFecha obtenerFechaActual() {
+    ResultadoFecha resultado;
+    resultado.consultaExitosa = 0;
+    strcpy(resultado.fechaCadena, "DD/MM/AAAA");
+    time_t tiempoActual;
+    tiempoActual = time(NULL);
+
+    if (tiempoActual == -1) {
+        return resultado;
+    }
+
+    struct tm tiempoLocal = localtime(&tiempoActual)[0];
+
+    int dia = tiempoLocal.tm_mday;
+    int mes = tiempoLocal.tm_mon + 1;
+    int anio = tiempoLocal.tm_year + 1900;
+
+    if (dia < 10 && mes < 10) {
+        sprintf(resultado.fechaCadena, "0%d/0%d/%d", dia, mes, anio);
+    }
+    else if (dia < 10 && mes >= 10) {
+        sprintf(resultado.fechaCadena, "0%d/%d/%d", dia, mes, anio);
+    }
+    else if (dia >= 10 && mes < 10) {
+        sprintf(resultado.fechaCadena, "%d/0%d/%d", dia, mes, anio);
+    }
+    else {
+        sprintf(resultado.fechaCadena, "%d/%d/%d", dia, mes, anio);
+    }
+
+    resultado.consultaExitosa = 1;
+    return resultado;
+}
+
 void guardarGanador(char nombreGanador[], int pares) {
     RegistroGanador nuevoGanador;
 
     strcpy(nuevoGanador.nombre, nombreGanador);
     nuevoGanador.paresFormados = pares;
 
-    strcpy(nuevoGanador.fecha, "DD/MM/AAAA");
+    ResultadoFecha fechaHoy = obtenerFechaActual();
+    strcpy(nuevoGanador.fecha, fechaHoy.fechaCadena);
 
     FILE *archivo = fopen("ganadores.bin", "ab");
 
@@ -174,12 +233,61 @@ void guardarMovimiento(int numJugador, Ficha f1, Ficha f2) {
     }
 }
 
-void mostrarRepeticion() {
-    FILE *archivo = fopen("partida.bin", "rb");
-    if (archivo == NULL) {
-        printf("\nNo hay movimientos registrados para esta partida.\n");
+void guardarPartidaFinal() {
+    ResultadoFecha fecha = obtenerFechaActual();
+    char nombreBase[50];
+    char nombreFinal[50];
+
+    char dia[3] = { fecha.fechaCadena[0], fecha.fechaCadena[1], '\0' };
+    char mes[3] = { fecha.fechaCadena[3], fecha.fechaCadena[4], '\0' };
+    char anio[5] = { fecha.fechaCadena[6], fecha.fechaCadena[7], fecha.fechaCadena[8], fecha.fechaCadena[9], '\0' };
+
+    sprintf(nombreBase, "partida%s%s%s", dia, mes, anio);
+    sprintf(nombreFinal, "%s.bin", nombreBase);
+
+    int contador = 1;
+    FILE *verificador = fopen(nombreFinal, "rb");
+    while (verificador != NULL) {
+        fclose(verificador);
+        sprintf(nombreFinal, "%s-%d.bin", nombreBase, contador);
+        contador++;
+        verificador = fopen(nombreFinal, "rb");
+    }
+
+    FILE *origen = fopen("partida.bin", "rb");
+    if (origen == NULL) {
+        printf("\nERROR: No se encontro la informacion de la partida.\n");
         return;
     }
+
+    FILE *destino = fopen(nombreFinal, "wb");
+    if (destino != NULL) {
+        RegistroMovimiento mov;
+        while (fread(&mov, sizeof(RegistroMovimiento), 1, origen) == 1) {
+            fwrite(&mov, sizeof(RegistroMovimiento), 1, destino);
+        }
+        fclose(destino);
+        printf("\nLa partida ha sido guardada exitosamente bajo el nombre: %s\n", nombreFinal);
+    } else {
+        printf("\nERROR: No se pudo crear el archivo final.\n");
+    }
+    fclose(origen);
+}
+
+void mostrarRepeticion() {
+    char nombreArchivo[50];
+
+    printf("\nIngrese el nombre del archivo de la partida a consultar (ej. partida18052026.bin): ");
+
+    fgets(nombreArchivo, sizeof(nombreArchivo), stdin);
+    nombreArchivo[strcspn(nombreArchivo, "\n")] = '\0';
+
+    FILE *archivo = fopen(nombreArchivo, "rb");
+    if (archivo == NULL) {
+        printf("\nERROR\nEl archivo '%s' no existe o no se pudo abrir.\n", nombreArchivo);
+        return;
+    }
+
     RegistroMovimiento movimientos;
     printf("\n=== REPETICION DE JUGADAS ===\n");
     while (fread(&movimientos, sizeof(RegistroMovimiento), 1, archivo) == 1) {

@@ -34,10 +34,17 @@ typedef struct {
     Ficha ficha2;
 } RegistroMovimiento;
 
+typedef struct {
+    char fechaCadena[15];
+    int consultaExitosa;
+} ResultadoFecha;
+
 Banco setDomino(int maximoDomino);
 Banco mezclarSet(Banco banco);
 EstadoReparto repartirSeisCartas(Banco bancoActual, Jugador jugadorActual);
 EstadoReparto pedirCuatroFichas(Banco bancoActual, Jugador jugadorActual);
+
+EstadoReparto repartirModoPrueba(Banco bancoActual, Jugador jugadorActual);
 
 int validarPar(Ficha f1, Ficha f2);
 Jugador removerFichas(Jugador jugador, int indiceJUno, int indiceJDos);
@@ -47,5 +54,8 @@ void inicializarArchivoPartida();
 void guardarMovimiento(int numJugador, Ficha f1, Ficha f2);
 void mostrarRepeticion();
 void mostrarGanadores();
+
+ResultadoFecha obtenerFechaActual();
+void guardarPartidaFinal();
 
 #endif
